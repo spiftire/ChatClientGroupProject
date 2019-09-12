@@ -208,7 +208,6 @@ public class TCPClient {
         while (isConnectionActive()) {
             String response = this.waitServerResponse();
             String commandWord = response.split("\\s")[0];        // getting first word in response which is the command word
-            System.out.println(commandWord);
             switch (commandWord) {
                 case "loginok":
                     this.onLoginResult(true, response);
