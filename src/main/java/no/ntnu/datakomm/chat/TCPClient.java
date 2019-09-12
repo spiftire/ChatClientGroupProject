@@ -216,10 +216,7 @@ public class TCPClient {
                 case "loginerr":
                     this.onLoginResult(false, response);
                     break;
-                case "users":
-                    String[] users = response.split("\\s", 2)[1].split("\\s");
-                    this.onUsersList(users);
-                    break;
+
                 default:
                     System.out.println("Default triggered. Response: " + response);
             }
