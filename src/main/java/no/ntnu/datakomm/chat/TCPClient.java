@@ -47,13 +47,15 @@ public class TCPClient {
      * that no two threads call this method in parallel.
      */
     public synchronized void disconnect() {
-        try {
-            this.connection.close();
-            this.connection = null;
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
         // Hint: remember to check if connection is active
+        if (this.isConnectionActive()) {
+            try {
+                this.connection.close();
+                this.connection = null;
+            } catch (IOException e) {
+                System.err.println("Something went wrong on disconnect " + e.getMessage());
+            }
+        }
     }
 
     /**
