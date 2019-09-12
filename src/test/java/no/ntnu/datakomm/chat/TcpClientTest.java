@@ -10,8 +10,8 @@ import static org.junit.Assert.*;
 
 public class TcpClientTest {
     // Host and port to be used for all connection in the tests
-    private static final String SERVER_HOST = "datakomm.work";
-    private static final int SERVER_PORT = 1310;
+    private static final String SERVER_HOST = "ntnu.no";
+    private static final int SERVER_PORT = 80;
 
     // How many ms to sleep when waiting for server response to arrive
     private static final int THREAD_SLEEP_TIME = 2000;
