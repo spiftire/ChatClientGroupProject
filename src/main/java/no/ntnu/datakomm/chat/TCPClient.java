@@ -95,7 +95,7 @@ public class TCPClient {
     public boolean sendPublicMessage(String message) {
         // Hint: Reuse sendCommand() method
         // Hint: update lastError if you want to store the reason for the error.
-        return this.sendCommand(message);
+        return this.sendCommand("msg " + message);
     }
 
     /**
@@ -152,22 +152,17 @@ public class TCPClient {
      * @return one line of text (one command) received from the server
      */
     private String waitServerResponse() {
+        String oneResponseLine = "";
         try {
             this.fromServer = new BufferedReader(new InputStreamReader(this.connection.getInputStream()));
-            String oneResponseLine;
-
             oneResponseLine = this.fromServer.readLine();
-
-            return oneResponseLine;
         } catch (IOException e) {
             System.err.println(e.getMessage());
             // Step 4: If you get I/O Exception or null from the stream, it means that something has gone wrong
             // with the stream and hence the socket. Probably a good idea to close the socket in that case.
             this.disconnect();
         }
-
-
-        return "";
+        return oneResponseLine;
     }
 
     /**
@@ -206,27 +201,46 @@ public class TCPClient {
         // Hint: In Step 3 you need to handle only login-related responses.
         // Hint: In Step 3 reuse onLoginResult() method
         while (isConnectionActive()) {
-            String response = this.waitServerResponse();
-            String commandWord = response.split("\\s")[0];        // getting first word in response which is the command word
-            switch (commandWord) {
-                case "loginok":
-                    this.onLoginResult(true, response);
-                    break;
-
-                case "loginerr":
-                    this.onLoginResult(false, response);
-                    break;
-                case "users":
-                    String[] users = response.split("\\s", 2)[1].split("\\s");
-                    this.onUsersList(users);
-                    break;
-                case "msg":
-                    break;
-                case "privmsg":
-                    System.out.println("PRIVMSH");
-                    break;
-                default:
-                    System.out.println("Default triggered. Response: " + response);
+            try {
+                String response = this.waitServerResponse();
+                StringSplitter stringSplitter = new StringSplitter("\\s");
+                stringSplitter.split(response, 2);
+                String commandWord = stringSplitter.getPart(1);        // getting first word in response which is the command word
+                System.out.println(commandWord);
+                switch (commandWord) {
+                    case "loginok":
+                        this.onLoginResult(true, response);
+                        break;
+                    case "loginerr":
+                        this.onLoginResult(false, stringSplitter.getPart(2));
+                        break;
+                    case "users":
+                        String[] users = stringSplitter.getAllPartsFromString(stringSplitter.getPart(2));
+                        this.onUsersList(users);
+                        break;
+                    case "msg":
+                        stringSplitter.split(stringSplitter.getPart(2), 2);
+                        onMsgReceived(false, stringSplitter.getPart(1), stringSplitter.getPart(2));
+                        break;
+                    case "privmsg":
+                        stringSplitter.split(stringSplitter.getPart(2), 2);
+                        onMsgReceived(true, stringSplitter.getPart(1), stringSplitter.getPart(2));
+                        break;
+                    case "msgerr":
+                        onMsgError(stringSplitter.getPart(2));
+                        break;
+                    case "cmderr":
+                        onCmdError(stringSplitter.getPart(2));
+                        break;
+                    default:
+                        System.out.println("Default triggered. Response: " + response);
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println(e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Horrible error...");
             }
 
 
@@ -316,7 +330,6 @@ public class TCPClient {
     private void onMsgReceived(boolean priv, String sender, String text) {
         // Step 7: Implement this method
         TextMessage textMessage = new TextMessage(sender, priv, text);
-
         for (ChatListener chatListener : listeners) {
             chatListener.onMessageReceived(textMessage);
         }
