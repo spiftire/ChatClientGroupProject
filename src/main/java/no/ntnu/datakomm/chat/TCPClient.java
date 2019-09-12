@@ -200,10 +200,12 @@ public class TCPClient {
             String responseWord = response.split(" ", 1)[0];        // getting first word in response
             switch (responseWord) {
                 case "loginok":
-                    System.out.println("Got loginok from server, preceeding login action");
+                    this.onLoginResult(true, response);
                     break;
 
-                case ""
+                case "loginerr":
+                    this.onLoginResult(false, response);
+                    break;
 
                 default:
                     System.out.println("Default triggered. Response: " + response);
