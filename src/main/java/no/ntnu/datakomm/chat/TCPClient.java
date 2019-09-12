@@ -24,7 +24,6 @@ public class TCPClient {
      */
     public boolean connect(String host, int port) {
         boolean isConnected = false;
-
         try {
             this.connection = new Socket(host, port);
             isConnected = this.connection.isConnected();
@@ -52,6 +51,7 @@ public class TCPClient {
             try {
                 this.connection.close();
                 this.connection = null;
+                this.onDisconnect();
             } catch (IOException e) {
                 System.err.println("Something went wrong on disconnect " + e.getMessage());
             }
@@ -216,7 +216,15 @@ public class TCPClient {
                 case "loginerr":
                     this.onLoginResult(false, response);
                     break;
-
+                case "users":
+                    String[] users = response.split("\\s", 2)[1].split("\\s");
+                    this.onUsersList(users);
+                    break;
+                case "msg":
+                    break;
+                case "privmsg":
+                    System.out.println("PRIVMSH");
+                    break;
                 default:
                     System.out.println("Default triggered. Response: " + response);
             }
@@ -309,7 +317,7 @@ public class TCPClient {
         // Step 7: Implement this method
         TextMessage textMessage = new TextMessage(sender, priv, text);
 
-        for ( ChatListener chatListener : listeners ) {
+        for (ChatListener chatListener : listeners) {
             chatListener.onMessageReceived(textMessage);
         }
     }
@@ -322,7 +330,7 @@ public class TCPClient {
     private void onMsgError(String errMsg) {
         // Step 7: Implement this method
 
-        for ( ChatListener chatListener : listeners ) {
+        for (ChatListener chatListener : listeners) {
             chatListener.onMessageError(errMsg);
         }
     }
@@ -334,7 +342,7 @@ public class TCPClient {
      */
     private void onCmdError(String errMsg) {
         //  Step 7: Implement this method
-        for ( ChatListener chatListener : listeners ) {
+        for (ChatListener chatListener : listeners) {
             chatListener.onCommandError(errMsg);
         }
     }
