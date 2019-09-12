@@ -26,8 +26,8 @@ public class TCPClient {
         boolean isConnected = false;
 
         try {
-            Socket socket = new Socket(host, port);
-            isConnected = socket.isConnected();
+            this.connection = new Socket(host, port);
+            isConnected = this.connection.isConnected();
         } catch (IOException e) {
             System.err.println("Could not connect to server socket" + e.getMessage());
         }
@@ -47,7 +47,12 @@ public class TCPClient {
      * that no two threads call this method in parallel.
      */
     public synchronized void disconnect() {
-        // TODO Step 4: implement this method
+        try {
+            this.connection.close();
+            this.connection = null;
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
         // Hint: remember to check if connection is active
     }
 
@@ -55,7 +60,7 @@ public class TCPClient {
      * @return true if the connection is active (opened), false if not.
      */
     public boolean isConnectionActive() {
-        return connection != null;
+        return this.connection != null;
     }
 
     /**
@@ -65,7 +70,16 @@ public class TCPClient {
      * @return true on success, false otherwise
      */
     private boolean sendCommand(String cmd) {
-        // TODO Step 2: Implement this method
+        try {
+            this.toServer = new PrintWriter(this.connection.getOutputStream(), true);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+
+        if (this.isConnectionActive()) {
+            this.toServer.println(cmd);
+            return true;
+        }
         // Hint: Remember to check if connection is active
         return false;
     }
@@ -77,10 +91,9 @@ public class TCPClient {
      * @return true if message sent, false on error
      */
     public boolean sendPublicMessage(String message) {
-        // TODO Step 2: implement this method
         // Hint: Reuse sendCommand() method
         // Hint: update lastError if you want to store the reason for the error.
-        return false;
+        return this.sendCommand(message);
     }
 
     /**
@@ -89,8 +102,8 @@ public class TCPClient {
      * @param username Username to use
      */
     public void tryLogin(String username) {
-        // TODO Step 3: implement this method
         // Hint: Reuse sendCommand() method
+        this.sendCommand(username);
     }
 
     /**
@@ -134,6 +147,9 @@ public class TCPClient {
      */
     private String waitServerResponse() {
         // TODO Step 3: Implement this method
+
+        
+
         // TODO Step 4: If you get I/O Exception or null from the stream, it means that something has gone wrong
         // with the stream and hence the socket. Probably a good idea to close the socket in that case.
 
@@ -176,6 +192,7 @@ public class TCPClient {
             // and act on it.
             // Hint: In Step 3 you need to handle only login-related responses.
             // Hint: In Step 3 reuse onLoginResult() method
+
 
             // TODO Step 5: update this method, handle user-list response from the server
             // Hint: In Step 5 reuse onUserList() method
