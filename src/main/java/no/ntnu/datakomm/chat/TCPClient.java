@@ -115,6 +115,7 @@ public class TCPClient {
      * clear your current user list and use events in the listener.
      */
     public void refreshUserList() {
+        this.sendCommand("users");
         // TODO Step 5: implement this method
         // Hint: Use Wireshark and the provided chat client reference app to find out what commands the
         // client and server exchange for user listing.
@@ -199,7 +200,8 @@ public class TCPClient {
     private void parseIncomingCommands() {
         while (isConnectionActive()) {
             String response = this.waitServerResponse();
-            String commandWord = response.split(" ", 1)[0];        // getting first word in response which is the command word
+            String commandWord = response.split("\\s")[0];        // getting first word in response which is the command word
+            System.out.println(commandWord);
             switch (commandWord) {
                 case "loginok":
                     this.onLoginResult(true, response);
@@ -208,7 +210,10 @@ public class TCPClient {
                 case "loginerr":
                     this.onLoginResult(false, response);
                     break;
-
+                case "users":
+                    String[] users = response.split("\\s", 2)[1].split("\\s");
+                    this.onUsersList(users);
+                    break;
                 default:
                     System.out.println("Default triggered. Response: " + response);
             }
