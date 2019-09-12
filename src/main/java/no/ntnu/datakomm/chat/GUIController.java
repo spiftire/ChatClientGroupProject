@@ -72,7 +72,7 @@ public class GUIController implements ChatListener {
      */
     public void initialize() {
         tcpClient = new TCPClient();
-        hostInput.setText("datakomm.work");
+        hostInput.setText("158.38.101.49");
         portInput.setText("1300");
         textOutput.heightProperty().addListener((observable, oldValue, newValue)
                 -> outputScroll.setVvalue(1.0));
