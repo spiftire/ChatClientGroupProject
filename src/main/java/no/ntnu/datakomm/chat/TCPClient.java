@@ -159,8 +159,8 @@ public class TCPClient {
             return oneResponseLine;
         } catch (IOException e) {
             System.err.println(e.getMessage());
-                // Step 4: If you get I/O Exception or null from the stream, it means that something has gone wrong
-                // with the stream and hence the socket. Probably a good idea to close the socket in that case.
+            // Step 4: If you get I/O Exception or null from the stream, it means that something has gone wrong
+            // with the stream and hence the socket. Probably a good idea to close the socket in that case.
             this.disconnect();
         }
 
@@ -199,8 +199,8 @@ public class TCPClient {
     private void parseIncomingCommands() {
         while (isConnectionActive()) {
             String response = this.waitServerResponse();
-            String responseWord = response.split(" ", 1)[0];        // getting first word in response
-            switch (responseWord) {
+            String commandWord = response.split(" ", 1)[0];        // getting first word in response which is the command word
+            switch (commandWord) {
                 case "loginok":
                     this.onLoginResult(true, response);
                     break;
