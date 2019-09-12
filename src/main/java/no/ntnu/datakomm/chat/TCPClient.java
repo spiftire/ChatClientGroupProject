@@ -103,7 +103,9 @@ public class TCPClient {
      */
     public void tryLogin(String username) {
         // Hint: Reuse sendCommand() method
-        this.sendCommand(username);
+        String command = "login " + username;
+
+        this.sendCommand(command);
     }
 
     /**
@@ -146,14 +148,22 @@ public class TCPClient {
      * @return one line of text (one command) received from the server
      */
     private String waitServerResponse() {
-        // TODO Step 3: Implement this method
+        try {
+            this.fromServer = new BufferedReader(new InputStreamReader(this.connection.getInputStream()));
+            String oneResponseLine;
 
-        
+            oneResponseLine = this.fromServer.readLine();
+
+            return oneResponseLine;
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+
 
         // TODO Step 4: If you get I/O Exception or null from the stream, it means that something has gone wrong
         // with the stream and hence the socket. Probably a good idea to close the socket in that case.
 
-        return null;
+        return "";
     }
 
     /**
@@ -186,6 +196,21 @@ public class TCPClient {
      */
     private void parseIncomingCommands() {
         while (isConnectionActive()) {
+            String response = this.waitServerResponse();
+            String responseWord = response.split(" ", 1)[0];        // getting first word in response
+            switch (responseWord) {
+                case "loginok":
+                    this.onLoginResult(true, response);
+                    break;
+
+                case "loginerr":
+                    this.onLoginResult(false, response);
+                    break;
+
+                default:
+                    System.out.println("Default triggered. Response: " + response);
+            }
+
             // TODO Step 3: Implement this method
             // Hint: Reuse waitServerResponse() method
             // Hint: Have a switch-case (or other way) to check what type of response is received from the server
