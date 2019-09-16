@@ -132,7 +132,7 @@ public class TCPClient {
         // Step 6: Implement this method
         // Hint: Reuse sendCommand() method
         // Hint: update lastError if you want to store the reason for the error.
-        String command = "/privmsg " + recipient + " " + message + "\n";
+        String command = "privmsg " + recipient + " " + message + "\n";
         return this.sendCommand(command);
     }
 
