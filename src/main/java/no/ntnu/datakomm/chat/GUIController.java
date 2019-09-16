@@ -122,6 +122,11 @@ public class GUIController implements ChatListener {
         helpBtn.setOnMouseClicked(event -> tcpClient.askSupportedCommands());
     }
 
+    private void tryLogin() {
+        tcpClient.tryLogin(loginInput.getText());
+        loginInput.setText("");
+    }
+
     /**
      * Take the message from the text input box, send it to the server
      */
