@@ -6,7 +6,7 @@ public class StringSplitter {
 
     private String splitRegex;
 
-    private String[] splitedString;
+    private String[] splittedString;
 
 
     /**
@@ -39,7 +39,7 @@ public class StringSplitter {
     public void split(String string, int limit) {
         if (string == null) throw new IllegalArgumentException("String can not be null");
         if (string.isEmpty()) throw new IllegalArgumentException("String can not be empty.");
-        this.splitedString = string.split(this.splitRegex, limit);
+        this.splittedString = string.split(this.splitRegex, limit);
     }
 
     /**
@@ -92,7 +92,7 @@ public class StringSplitter {
     public String getPart(int part) {
         if (part < 0) throw new IllegalArgumentException("Part number must be greater or equal to 0");
         part = part > 0 ? part - 1 : part;
-        return this.splitedString[part];
+        return this.splittedString[part];
     }
 
     /**
@@ -100,8 +100,8 @@ public class StringSplitter {
      *
      * @return the splitted string array
      */
-    public String[] getSplitedString() {
-        return this.splitedString;
+    public String[] getSplittedString() {
+        return this.splittedString;
     }
 
 }
