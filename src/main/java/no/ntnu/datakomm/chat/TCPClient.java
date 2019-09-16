@@ -220,18 +220,22 @@ public class TCPClient {
                         break;
                     case "msg":
                         stringSplitter.split(stringSplitter.getPart(2), 2);
-                        onMsgReceived(false, stringSplitter.getPart(1), stringSplitter.getPart(2));
+                        this.onMsgReceived(false, stringSplitter.getPart(1), stringSplitter.getPart(2));
                         break;
                     case "privmsg":
                         stringSplitter.split(stringSplitter.getPart(2), 2);
-                        onMsgReceived(true, stringSplitter.getPart(1), stringSplitter.getPart(2));
+                        this.onMsgReceived(true, stringSplitter.getPart(1), stringSplitter.getPart(2));
                         break;
                     case "msgerr":
-                        onMsgError(stringSplitter.getPart(2));
+                        this.onMsgError(stringSplitter.getPart(2));
                         break;
                     case "cmderr":
-                        onCmdError(stringSplitter.getPart(2));
+                        this.onCmdError(stringSplitter.getPart(2));
                         break;
+                    case "help":
+                        this.onSupported();
+                        break;
+                        // TODO Step 8: add support for incoming supported command list (type: supported)
                     default:
                         System.out.println("Default triggered. Response: " + response);
                 }
@@ -252,7 +256,6 @@ public class TCPClient {
             // TODO Step 7: add support for incoming command errors (type: cmderr)
             // Hint for Step 7: call corresponding onXXX() methods which will notify all the listeners
 
-            // TODO Step 8: add support for incoming supported command list (type: supported)
 
         }
     }
