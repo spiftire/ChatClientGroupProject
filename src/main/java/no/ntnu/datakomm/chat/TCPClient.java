@@ -222,21 +222,25 @@ public class TCPClient {
                         break;
                     case "msg":
                         stringSplitter.split(stringSplitter.getPart(2), 2);
-                        onMsgReceived(false, stringSplitter.getPart(1), stringSplitter.getPart(2));
+                        this.onMsgReceived(false, stringSplitter.getPart(1), stringSplitter.getPart(2));
                         break;
                     case "privmsg":
                         // Step 7: add support for incoming chat messages from other users (types: msg, privmsg)
                         stringSplitter.split(stringSplitter.getPart(2), 2);
-                        onMsgReceived(true, stringSplitter.getPart(1), stringSplitter.getPart(2));
+                        this.onMsgReceived(true, stringSplitter.getPart(1), stringSplitter.getPart(2));
                         break;
                     case "msgerr":
                         // Step 7: add support for incoming message errors (type: msgerr)
-                        onMsgError(stringSplitter.getPart(2));
+                        this.onMsgError(stringSplitter.getPart(2));
                         break;
                     case "cmderr":
                         //  Step 7: add support for incoming command errors (type: cmderr)
                         // Hint for Step 7: call corresponding onXXX() methods which will notify all the listeners
-                        onCmdError(stringSplitter.getPart(2));
+                        this.onCmdError(stringSplitter.getPart(2));
+                        break;
+                    case "help":
+                        // Step 8: add support for incoming supported command list (type: supported)
+                        this.onSupported(stringSplitter.getSplittedString());
                         break;
                     default:
                         System.out.println("Default triggered. Response: " + response);
