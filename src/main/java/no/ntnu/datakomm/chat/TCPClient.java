@@ -26,6 +26,7 @@ public class TCPClient {
         boolean isConnected = false;
         try {
             this.connection = new Socket(host, port);
+            this.toServer = new PrintWriter(this.connection.getOutputStream(), true);
             isConnected = this.connection.isConnected();
         } catch (IOException e) {
             System.err.println("Could not connect to server socket" + e.getMessage());
@@ -72,11 +73,6 @@ public class TCPClient {
      * @return true on success, false otherwise
      */
     private boolean sendCommand(String cmd) {
-        try {
-            this.toServer = new PrintWriter(this.connection.getOutputStream(), true);
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
 
         if (this.isConnectionActive()) {
             this.toServer.println(cmd);
