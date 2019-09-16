@@ -16,7 +16,7 @@ public class TCPClient {
     private final List<ChatListener> listeners = new LinkedList<>();
 
     /**
-     * Connect to a chat server.
+     * Connect to a chat server. And set uo input/output streams
      *
      * @param host host name or IP address of the chat server
      * @param port TCP port of the chat server
@@ -26,6 +26,7 @@ public class TCPClient {
         boolean isConnected = false;
         try {
             this.connection = new Socket(host, port);
+            this.fromServer = new BufferedReader(new InputStreamReader(this.connection.getInputStream()));
             this.toServer = new PrintWriter(this.connection.getOutputStream(), true);
             isConnected = this.connection.isConnected();
         } catch (IOException e) {
@@ -128,7 +129,7 @@ public class TCPClient {
         // Step 6: Implement this method
         // Hint: Reuse sendCommand() method
         // Hint: update lastError if you want to store the reason for the error.
-        String command = "/privmsg " + recipient + " " + message + "\n";
+        String command = "privmsg " + recipient + " " + message + "\n";
         return this.sendCommand(command);
     }
 
@@ -151,7 +152,6 @@ public class TCPClient {
     private String waitServerResponse() {
         String oneResponseLine = "";
         try {
-            this.fromServer = new BufferedReader(new InputStreamReader(this.connection.getInputStream()));
             oneResponseLine = this.fromServer.readLine();
         } catch (IOException e) {
             System.err.println(e.getMessage());
