@@ -300,9 +300,11 @@ public class GUIController implements ChatListener {
                 while (tcpClient.isConnectionActive()) {
                     // TcpClient will ask server to send the latest user list. The response from the server will
                     // not be handled here! Here we only ask for update and go to sleep. Then repeat.
+                    // todo Shouldent this function only be called on changes to the list?
+                    // todo Would it not be wise to use websockets or similare?
                     tcpClient.refreshUserList();
                     try {
-                        sleep(3000);
+                        sleep(500); // todo Ask why this was set to 3000 ms. Is it so the threads is not blocked?
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
