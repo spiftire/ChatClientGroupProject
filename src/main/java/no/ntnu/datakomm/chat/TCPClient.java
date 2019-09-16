@@ -16,7 +16,7 @@ public class TCPClient {
     private final List<ChatListener> listeners = new LinkedList<>();
 
     /**
-     * Connect to a chat server.
+     * Connect to a chat server. And set uo input/output streams
      *
      * @param host host name or IP address of the chat server
      * @param port TCP port of the chat server
@@ -26,6 +26,7 @@ public class TCPClient {
         boolean isConnected = false;
         try {
             this.connection = new Socket(host, port);
+            this.fromServer = new BufferedReader(new InputStreamReader(this.connection.getInputStream()));
             isConnected = this.connection.isConnected();
         } catch (IOException e) {
             System.err.println("Could not connect to server socket" + e.getMessage());
@@ -155,7 +156,6 @@ public class TCPClient {
     private String waitServerResponse() {
         String oneResponseLine = "";
         try {
-            this.fromServer = new BufferedReader(new InputStreamReader(this.connection.getInputStream()));
             oneResponseLine = this.fromServer.readLine();
         } catch (IOException e) {
             System.err.println(e.getMessage());
