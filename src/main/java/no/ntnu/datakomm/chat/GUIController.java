@@ -94,8 +94,12 @@ public class GUIController implements ChatListener {
         });
         loginBtn.setOnMouseClicked(event -> {
             // Mouse clicked on "Login" button
-            tcpClient.tryLogin(loginInput.getText());
-            loginInput.setText("");
+            this.tryLogin();
+        });
+        loginInput.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                this.tryLogin();
+            }
         });
         textInput.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER) && event.isShiftDown()) {
