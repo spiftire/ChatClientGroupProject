@@ -204,10 +204,9 @@ public class TCPClient {
         while (isConnectionActive()) {
             try {
                 String response = this.waitServerResponse();
-                StringSplitter stringSplitter = new StringSplitter("\\s");
+                StringSplitter stringSplitter = new StringSplitter("\\s"); // splitRegex = " " (one space)
                 stringSplitter.split(response, 2);
                 String commandWord = stringSplitter.getPart(1);        // getting first word in response which is the command word
-                System.out.println(commandWord);
                 switch (commandWord) {
                     case "loginok":
                         this.onLoginResult(true, response);
