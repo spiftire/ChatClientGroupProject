@@ -132,7 +132,7 @@ public class TCPClient {
         // Step 6: Implement this method
         // Hint: Reuse sendCommand() method
         // Hint: update lastError if you want to store the reason for the error.
-        String command = "privmsg " + recipient + " " + message + "\n";
+        String command = "/privmsg " + recipient + " " + message + "\n";
         return this.sendCommand(command);
     }
 
@@ -224,7 +224,7 @@ public class TCPClient {
                         stringSplitter.split(stringSplitter.getPart(2), 2);
                         this.onMsgReceived(false, stringSplitter.getPart(1), stringSplitter.getPart(2));
                         break;
-                    case "privmsg":
+                    case "/privmsg":
                         // Step 7: add support for incoming chat messages from other users (types: msg, privmsg)
                         stringSplitter.split(stringSplitter.getPart(2), 2);
                         this.onMsgReceived(true, stringSplitter.getPart(1), stringSplitter.getPart(2));
@@ -238,7 +238,7 @@ public class TCPClient {
                         // Hint for Step 7: call corresponding onXXX() methods which will notify all the listeners
                         this.onCmdError(stringSplitter.getPart(2));
                         break;
-                    case "help":
+                    case "supported":
                         // Step 8: add support for incoming supported command list (type: supported)
                         this.onSupported(stringSplitter.getSplittedString());
                         break;
@@ -254,7 +254,6 @@ public class TCPClient {
             }
 
 
-            // TODO Step 8: add support for incoming supported command list (type: supported)
 
         }
     }
