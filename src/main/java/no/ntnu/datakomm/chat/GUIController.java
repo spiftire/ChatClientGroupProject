@@ -72,7 +72,7 @@ public class GUIController implements ChatListener {
      */
     public void initialize() {
         tcpClient = new TCPClient();
-        hostInput.setText("datakomm.work");
+        hostInput.setText("158.38.101.49");
         portInput.setText("1300");
         textOutput.heightProperty().addListener((observable, oldValue, newValue)
                 -> outputScroll.setVvalue(1.0));
@@ -94,8 +94,12 @@ public class GUIController implements ChatListener {
         });
         loginBtn.setOnMouseClicked(event -> {
             // Mouse clicked on "Login" button
-            tcpClient.tryLogin(loginInput.getText());
-            loginInput.setText("");
+            this.tryLogin();
+        });
+        loginInput.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                this.tryLogin();
+            }
         });
         textInput.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER) && event.isShiftDown()) {
@@ -116,6 +120,11 @@ public class GUIController implements ChatListener {
         });
         // Mouse clicked on "Help" button
         helpBtn.setOnMouseClicked(event -> tcpClient.askSupportedCommands());
+    }
+
+    private void tryLogin() {
+        tcpClient.tryLogin(loginInput.getText());
+        loginInput.setText("");
     }
 
     /**
@@ -291,9 +300,11 @@ public class GUIController implements ChatListener {
                 while (tcpClient.isConnectionActive()) {
                     // TcpClient will ask server to send the latest user list. The response from the server will
                     // not be handled here! Here we only ask for update and go to sleep. Then repeat.
+                    // todo Shouldent this function only be called on changes to the list?
+                    // todo Would it not be wise to use websockets or similare?
                     tcpClient.refreshUserList();
                     try {
-                        sleep(3000);
+                        sleep(500); // todo Ask why this was set to 3000 ms. Is it so the threads is not blocked?
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
