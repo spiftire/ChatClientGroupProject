@@ -198,41 +198,43 @@ public class TCPClient {
         // Hint: In Step 3 you need to handle only login-related responses.
         // Hint: In Step 3 reuse onLoginResult() method
         while (isConnectionActive()) {
+            final int COMMAND_WORD_INDEX = 1;
+            final int COMMAND_BODY = 2;
             try {
                 String response = this.waitServerResponse();
                 StringSplitter stringSplitter = new StringSplitter("\\s"); // splitRegex = " " (one space)
                 stringSplitter.split(response, 2);
-                String commandWord = stringSplitter.getPart(1);        // getting first word in response which is the command word
+                String commandWord = stringSplitter.getPart(COMMAND_WORD_INDEX);        // getting first word in response which is the command word
                 switch (commandWord) {
                     case "loginok":
                         this.onLoginResult(true, response);
                         break;
                     case "loginerr":
-                        this.onLoginResult(false, stringSplitter.getPart(2));
+                        this.onLoginResult(false, stringSplitter.getPart(COMMAND_BODY));
                         break;
                     case "users":
                         // Step 5: update this method, handle user-list response from the server
                         // Hint: In Step 5 reuse onUserList() method
-                        String[] users = stringSplitter.getAllPartsFromString(stringSplitter.getPart(2));
+                        String[] users = stringSplitter.getAllPartsFromString(stringSplitter.getPart(COMMAND_BODY));
                         this.onUsersList(users);
                         break;
                     case "msg":
-                        stringSplitter.split(stringSplitter.getPart(2), 2);
-                        this.onMsgReceived(false, stringSplitter.getPart(1), stringSplitter.getPart(2));
+                        stringSplitter.split(stringSplitter.getPart(COMMAND_BODY), 2);
+                        this.onMsgReceived(false, stringSplitter.getPart(COMMAND_WORD_INDEX), stringSplitter.getPart(COMMAND_BODY));
                         break;
                     case "privmsg":
                         // Step 7: add support for incoming chat messages from other users (types: msg, privmsg)
-                        stringSplitter.split(stringSplitter.getPart(2), 2);
-                        this.onMsgReceived(true, stringSplitter.getPart(1), stringSplitter.getPart(2));
+                        stringSplitter.split(stringSplitter.getPart(COMMAND_BODY), 2);
+                        this.onMsgReceived(true, stringSplitter.getPart(COMMAND_WORD_INDEX), stringSplitter.getPart(COMMAND_BODY));
                         break;
                     case "msgerr":
                         // Step 7: add support for incoming message errors (type: msgerr)
-                        this.onMsgError(stringSplitter.getPart(2));
+                        this.onMsgError(stringSplitter.getPart(COMMAND_BODY));
                         break;
                     case "cmderr":
                         //  Step 7: add support for incoming command errors (type: cmderr)
                         // Hint for Step 7: call corresponding onXXX() methods which will notify all the listeners
-                        this.onCmdError(stringSplitter.getPart(2));
+                        this.onCmdError(stringSplitter.getPart(COMMAND_BODY));
                         break;
                     case "supported":
                         // Step 8: add support for incoming supported command list (type: supported)
