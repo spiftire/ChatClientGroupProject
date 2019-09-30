@@ -294,6 +294,7 @@ public class TCPClient {
         for (ChatListener chatListener : listeners) {
             chatListener.onLoginResult(success, errMsg);
         }
+        this.setLastError(errMsg);
     }
 
     /**
@@ -346,6 +347,7 @@ public class TCPClient {
         for (ChatListener chatListener : listeners) {
             chatListener.onMessageError(errMsg);
         }
+        this.setLastError(errMsg);
     }
 
     /**
@@ -358,6 +360,7 @@ public class TCPClient {
         for (ChatListener chatListener : listeners) {
             chatListener.onCommandError(errMsg);
         }
+        this.setLastError(errMsg);
     }
 
     /**
@@ -371,5 +374,12 @@ public class TCPClient {
         for (ChatListener chatListener : listeners) {
             chatListener.onSupportedCommands(commands);
         }
+    }
+
+    /**
+     * Sets the last error message
+     */
+    private void setLastError(String lastError) {
+        this.lastError = lastError;
     }
 }
