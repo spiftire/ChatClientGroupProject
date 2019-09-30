@@ -51,6 +51,8 @@ public class TCPClient {
         // Hint: remember to check if connection is active
         if (this.isConnectionActive()) {
             try {
+                this.toServer.close();
+                this.fromServer.close();
                 this.connection.close();
                 this.connection = null;
                 this.onDisconnect();
